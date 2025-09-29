@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labiyajo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --water-blue: #5BC0EB;
+      --macchiato: #D7CDB8;
+      --greige: #F1EEE8;
+      --charcoal: #2C2C2C;
+      --white-custom: #FAFAFA;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .text-water-blue { color: var(--water-blue); }
+    .bg-water-blue { background-color: var(--water-blue); }
+    .bg-macchiato { background-color: var(--macchiato); }
+    .bg-greige { background-color: var(--greige); }
+    .text-charcoal { color: var(--charcoal); }
+    .bg-white-custom { background-color: var(--white-custom); }
+    .border-charcoal-20 { border-color: rgba(44, 44, 44, 0.2); }
+    .hover\:bg-blue-500:hover { background-color: #3b9bc7; }
+
+    /* Navbar Sliding Underline */
+    .nav-links {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .nav-links {
+        flex-direction: row;
+        gap: 1.5rem;
+      }
+    }
+    .nav-link {
+      position: relative;
+      padding-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+    .nav-link:hover {
+      color: var(--water-blue);
+    }
+    .nav-link.selected::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--water-blue);
+      transition: all 0.3s ease;
+    }
+    .nav-link:not(.selected)::after {
+      width: 0;
+    }
+  </style>
+</head>
+<body class="bg-white-custom text-charcoal">
+  
+
+  <header class="fixed top-0 w-full bg-white-custom shadow-sm z-10">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    
+    <!-- Logo -->
+    <div class="font-serif text-2xl font-bold tracking-wide text-charcoal">
+      <span class="font-[Cinzel]">C&amp;D</span>
+    </div>
+
+    <!-- Nav Links Centered in a Rounded Border -->
+    <div class="flex space-x-6 px-6 py-2 border border-charcoal-20 rounded-full">
+      <a href="#hero" class="text-charcoal hover:bg-water-blue hover:text-white px-3 py-1 rounded-full transition">Home</a>
+      <a href="#services" class="text-charcoal hover:bg-water-blue hover:text-white px-3 py-1 rounded-full transition">Services</a>
+      <a href="#how-it-works" class="text-charcoal hover:bg-water-blue hover:text-white px-3 py-1 rounded-full transition">How It Works</a>
+      <a href="#testimonials" class="text-charcoal hover:bg-water-blue hover:text-white px-3 py-1 rounded-full transition">Testimonials</a>
+      <a href="#contact" class="text-charcoal hover:bg-water-blue hover:text-white px-3 py-1 rounded-full transition">Contact</a>
+    </div>
+
+    <!-- Right Side (empty for now / Book Now later) -->
+    <div></div>
+  </nav>
+</header>
+
+
+  <!-- Hero Section -->
+  <section id="hero" class="min-h-screen bg-gradient-to-b from-greige to-white-custom flex items-center justify-center">
+    <div class="max-w-full sm:max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Car Wash On-Demand</h1>
+      <p class="text-base sm:text-lg md:text-xl text-charcoal/80 mb-8 max-w-md sm:max-w-lg md:max-w-2xl mx-auto">
+        Choose mobile service or visit a nearby location. Fast, convenient, and professional.
+      </p>
+      <a href="booking.html" class="bg-water-blue text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full text-base sm:text-lg font-semibold hover:bg-blue-500 transition">
+        Book Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-12 sm:py-16 bg-macchiato">
+    <div class="max-w-full sm:max-w-7xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Our Services</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md hover:shadow-lg transition">
+          <img src="https://via.placeholder.com/400x200?text=Mobile+Wash" alt="Mobile Car Wash" class="w-full h-40 sm:h-48 object-cover rounded-md mb-4">
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Mobile Car Wash</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">We come to you! Full car wash and detailing at your doorstep.</p>
+        </div>
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md hover:shadow-lg transition">
+          <img src="https://via.placeholder.com/400x200?text=Stationary" alt="Stationary Locations" class="w-full h-40 sm:h-48 object-cover rounded-md mb-4">
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Stationary Locations</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">Visit our trusted car wash partners across the city.</p>
+        </div>
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md hover:shadow-lg transition">
+          <img src="https://via.placeholder.com/400x200?text=Detailing" alt="Premium Detailing" class="w-full h-40 sm:h-48 object-cover rounded-md mb-4">
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Premium Detailing</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">Advanced polishing, waxing, and interior cleaning for your vehicle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-12 sm:py-16 bg-white-custom">
+    <div class="max-w-full sm:max-w-7xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">How It Works</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-bold text-water-blue mb-4">1</div>
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Choose Your Service</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">Select mobile wash or nearby location.</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-bold text-water-blue mb-4">2</div>
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Book & Track</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">Book online, pay securely, and track your order status.</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-bold text-water-blue mb-4">3</div>
+          <h3 class="text-lg sm:text-xl font-semibold mb-2">Get a Shiny Car</h3>
+          <p class="text-charcoal/80 text-sm sm:text-base">Relax while we make your car spotless.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-12 sm:py-16 bg-greige">
+    <div class="max-w-full sm:max-w-7xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">What Our Clients Say</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md">
+          <p class="text-charcoal/80 mb-4 text-sm sm:text-base">“Fast, professional, and convenient! My car looks amazing every time.”</p>
+          <p class="font-semibold text-sm sm:text-base">– Abebe T.</p>
+          <div class="flex space-x-1 text-yellow-400 text-sm">★★★★★</div>
+        </div>
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md">
+          <p class="text-charcoal/80 mb-4 text-sm sm:text-base">“Love the mobile service option. Makes life so much easier.”</p>
+          <p class="font-semibold text-sm sm:text-base">– Hana G.</p>
+          <div class="flex space-x-1 text-yellow-400 text-sm">★★★★☆</div>
+        </div>
+        <div class="bg-white-custom p-4 sm:p-6 rounded-lg shadow-md">
+          <p class="text-charcoal/80 mb-4 text-sm sm:text-base">“Excellent detailing! Friendly staff and smooth booking process.”</p>
+          <p class="font-semibold text-sm sm:text-base">– Samuel K.</p>
+          <div class="flex space-x-1 text-yellow-400 text-sm">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-12 sm:py-16 bg-white-custom">
+    <div class="max-w-full sm:max-w-7xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">About Labiyajo</h2>
+      <p class="text-charcoal/80 text-sm sm:text-base max-w-md sm:max-w-lg md:max-w-2xl mx-auto">
+        Labiyajo Car Wash is committed to providing convenient and professional car cleaning services. Our team ensures your car looks spotless, whether we come to you or you visit one of our trusted locations.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-12 sm:py-16 bg-macchiato">
+    <div class="max-w-full sm:max-w-7xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Contact Us</h2>
+      <form class="max-w-full sm:max-w-lg mx-auto space-y-4">
+        <input type="text" placeholder="Name" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue text-sm sm:text-base">
+        <input type="email" placeholder="Email" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue text-sm sm:text-base">
+        <textarea placeholder="Message" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue text-sm sm:text-base" rows="5"></textarea>
+        <button type="submit" class="bg-water-blue text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold hover:bg-blue-500 transition text-sm sm:text-base">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-charcoal text-white-custom py-6 text-center">
+    <p class="text-sm sm:text-base">© 2025 Labiyajo Car Wash. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript for Navbar Selection -->
+  <script>
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navLinks.forEach(l => l.classList.remove('selected'));
+        link.classList.add('selected');
+        const href = link.getAttribute('href');
+        document.querySelector(href).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
+
+
