@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Provider Dashboard — Clean&amp;Dry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <header class="bg-white/60 dark:bg-gray-800/60 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">C&amp;D</div>
+        <span class="font-bold">Provider</span>
+      </a>
+      <a href="home.html" class="text-sm">Customer view</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-bold mb-6">Incoming Orders</h2>
+
+    <div id="incomingOrders" class="space-y-4">
+      <!-- example order card -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded shadow flex justify-between items-start">
+        <div>
+          <h3 class="font-semibold">Order #1234 — Mobile</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Customer: Jane — 555-0123</p>
+          <p class="text-sm">Location: 789 Parker Ave</p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <button class="acceptBtn px-3 py-1 bg-green-600 text-white rounded">Accept</button>
+          <button class="declineBtn px-3 py-1 border rounded">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings -->
+    <section class="mt-8">
+      <h3 class="font-semibold mb-3">Earnings</h3>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded shadow">Balance: <strong>$120.00</strong></div>
+    </section>
+  </main>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
