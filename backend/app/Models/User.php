@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',  // Add this
+        'role',
     ];
 
     protected $hidden = [
@@ -26,7 +26,28 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',  // Laravel 10+ auto-hashing
+            'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+    public function business()
+    {
+        return $this->hasOne(Business::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    public function isWasher()
+    {
+        return $this->role === 'washer';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
     }
 }

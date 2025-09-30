@@ -1,51 +1,99 @@
-<!doctype html>
-<html lang="en" class="antialiased">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Home — Clean&amp;Dry</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Clean&Dry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/auth.js" defer></script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <header class="bg-white/60 dark:bg-gray-800/60 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">C&amp;D</div>
-        <span class="font-bold">Clean&amp;Dry</span>
-      </a>
-      <div class="flex items-center gap-4">
-        <a href="order-details.html" class="text-sm">My Orders</a>
-        <a href="provider-dashboard.html" class="text-sm">For Providers</a>
-        <button id="darkToggleTop" class="p-2 rounded">Toggle</button>
-        <a href="login.html" class="text-sm">Logout</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-6 py-10">
-    <h2 class="text-2xl font-semibold mb-6">Welcome back, <span id="userName">Customer</span></h2>
-
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-        <h3 class="font-semibold">Quick Actions</h3>
-        <div class="mt-4 flex flex-col gap-3">
-          <a href="booking.html" class="bg-blue-600 text-white px-4 py-2 rounded">Book a Service</a>
-          <a href="businesses.html" class="px-4 py-2 rounded border">Find Providers</a>
-          <a href="order-details.html" class="px-4 py-2 rounded border">Track Orders</a>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-600">Clean&Dry</a>
+            <div class="flex items-center space-x-4">
+                <span id="userWelcome" class="text-gray-700"></span>
+                <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Logout</button>
+            </div>
         </div>
-      </div>
+    </header>
 
-      <div class="md:col-span-2 bg-white dark:bg-gray-800 p-6 rounded shadow">
-        <h3 class="font-semibold mb-4">Recent Orders</h3>
-        <ul id="recentOrders" class="space-y-4">
-          <!-- filled by JS or backend -->
-          <li class="p-4 border rounded">No recent orders yet</li>
-        </ul>
-      </div>
-    </div>
-  </main>
+    <!-- Dashboard Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div id="loadingScreen" class="text-center py-12">
+            <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p>Loading dashboard...</p>
+        </div>
 
-  <script src="assets/js/main.js" defer></script>
+        <div id="dashboardContent" class="hidden">
+            <!-- Customer Dashboard -->
+            <div id="customerDashboard" class="hidden">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Customer Dashboard</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Book a Service</h3>
+                        <p class="text-gray-600 mb-4">Schedule a car wash or detailing service</p>
+                        <a href="booking.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Book Now</a>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">My Orders</h3>
+                        <p class="text-gray-600 mb-4">View your current and past orders</p>
+                        <a href="orders.html" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">View Orders</a>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Profile</h3>
+                        <p class="text-gray-600 mb-4">Manage your account settings</p>
+                        <a href="profile.html" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Washer Dashboard -->
+            <div id="washerDashboard" class="hidden">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Washer Dashboard</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Incoming Orders</h3>
+                        <p class="text-gray-600 mb-4">View and accept new service requests</p>
+                        <a href="orders.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">View Orders</a>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">My Services</h3>
+                        <p class="text-gray-600 mb-4">Manage your service offerings</p>
+                        <a href="services.html" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Manage Services</a>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Earnings</h3>
+                        <p class="text-gray-600 mb-4">Track your income and payments</p>
+                        <a href="earnings.html" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">View Earnings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!requireAuth()) return;
+
+            const user = authManager.getCurrentUser();
+            
+            // Update welcome message
+            document.getElementById('userWelcome').textContent = `Welcome, ${user.name}`;
+            
+            // Show appropriate dashboard based on role
+            if (user.role === 'customer') {
+                document.getElementById('customerDashboard').classList.remove('hidden');
+            } else if (user.role === 'washer') {
+                document.getElementById('washerDashboard').classList.remove('hidden');
+            }
+            
+            // Show dashboard content
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('dashboardContent').classList.remove('hidden');
+        });
+    </script>
 </body>
 </html>
