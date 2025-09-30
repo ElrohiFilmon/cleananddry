@@ -82,7 +82,16 @@
             
             // Update welcome message
             document.getElementById('userWelcome').textContent = `Welcome, ${user.name}`;
-            
+            // In home.html script
+            const token = localStorage.getItem('token');
+            if (!token) {
+              window.location.href = 'login.html';
+            }
+
+            // To call protected API (e.g., check-auth)
+            const response = await fetch('http://127.0.0.1:8000/api/check-auth', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
             // Show appropriate dashboard based on role
             if (user.role === 'customer') {
                 document.getElementById('customerDashboard').classList.remove('hidden');

@@ -48,31 +48,36 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Redirect if already logged in
-            if (authManager.isLoggedIn()) {
-                window.location.href = 'home.html';
-                return;
-            }
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = {
+          email: formData.get('email'),
+          password: formData.get('password')
+        };
 
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const errorDiv = document.getElementById('errorMessage');
+        try {
+          const response = await fetch('http://127.0.0.1:8000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
 
-                // Clear previous errors
-                errorDiv.classList.add('hidden');
+          const result = await response.json();
 
-                const result = await login(email, password);
-                
-                if (!result.success) {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.remove('hidden');
-                }
-            });
-        });
+          if (response.ok) {
+            // Store token/user for API calls
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('user', JSON.stringify(result.user));
+            // Redirect to home
+            window.location.href = 'home.html';
+          } else {
+            alert(result.message || 'Login failed');
+          }
+        } catch (error) {
+          alert('Error: ' + error.message);
+        }
+      });
     </script>
 </body>
 </html>

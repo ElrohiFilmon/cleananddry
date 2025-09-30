@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Business management
     Route::put('/businesses/{id}', [BusinessController::class, 'update']);
 });
+
 Route::get('/check-session', function (Request $request) {
     return response()->json([
         'authenticated' => Auth::check(),
