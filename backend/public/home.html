@@ -74,35 +74,45 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check authentication
-            if (!requireAuth()) return;
+  document.addEventListener('DOMContentLoaded', async () => {
+      // Check authentication using your AuthManager
+      if (!requireAuth()) return;
 
-            const user = authManager.getCurrentUser();
-            
-            // Update welcome message
-            document.getElementById('userWelcome').textContent = `Welcome, ${user.name}`;
-            // In home.html script
-            const token = localStorage.getItem('token');
-            if (!token) {
-              window.location.href = 'login.html';
-            }
+      const user = authManager.user;  // Now always fresh from localStorage
+      const token = authManager.token;
 
-            // To call protected API (e.g., check-auth)
-            const response = await fetch('http://127.0.0.1:8000/api/check-auth', {
+      if (!token) {
+          authManager.forceLogout();
+          return;
+      }
+
+      // Validate token with backend
+      try {
+          const response = await fetch('/api/check-auth', {
               headers: { 'Authorization': `Bearer ${token}` }
-            });
-            // Show appropriate dashboard based on role
-            if (user.role === 'customer') {
-                document.getElementById('customerDashboard').classList.remove('hidden');
-            } else if (user.role === 'washer') {
-                document.getElementById('washerDashboard').classList.remove('hidden');
-            }
-            
-            // Show dashboard content
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('dashboardContent').classList.remove('hidden');
-        });
+          });
+          if (!response.ok) throw new Error("Not authenticated");
+          const data = await response.json();
+          if (!data.authenticated) throw new Error("Not authenticated");
+      } catch (e) {
+          authManager.forceLogout();
+          return;
+      }
+
+      // Show welcome message
+      document.getElementById('userWelcome').textContent = `Welcome, ${user && user.name ? user.name : ''}`;
+
+      // Show appropriate dashboard based on role
+      if (user && user.role === 'customer') {
+          document.getElementById('customerDashboard').classList.remove('hidden');
+      } else if (user && user.role === 'washer') {
+          document.getElementById('washerDashboard').classList.remove('hidden');
+      }
+
+      // Show dashboard content
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('dashboardContent').classList.remove('hidden');
+  });
     </script>
 </body>
 </html>
