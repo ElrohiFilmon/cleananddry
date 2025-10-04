@@ -1,96 +1,48 @@
-// Authentication state management
+// Clean&Dry SPA Authentication Layer
+
 class AuthManager {
-    constructor() {
-        this.token = localStorage.getItem('auth_token');
-        this.user = JSON.parse(localStorage.getItem('user_data') || 'null');
+    // Always reads from localStorage
+    get token() {
+        // Support both new and legacy keys for backward compatibility
+        return localStorage.getItem('auth_token') || localStorage.getItem('token');
     }
-
-    // Check if user is authenticated
-    async checkAuthStatus() {
+    get user() {
         try {
-            const response = await fetch('/api/check-auth', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': this.token ? `Bearer ${this.token}` : ''
-                },
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.authenticated && data.user) {
-                    this.user = data.user;
-                    localStorage.setItem('user_data', JSON.stringify(data.user));
-                    this.showAuthenticatedUI();
-                } else {
-                    this.showGuestUI();
-                }
-            } else {
-                this.showGuestUI();
-            }
-        } catch (error) {
-            console.error('Auth check failed:', error);
-            this.showGuestUI();
-        } finally {
-            this.hideLoadingScreen();
+            // Support both new and legacy keys for backward compatibility
+            const user = localStorage.getItem('user_data') || localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
+        } catch {
+            return null;
         }
     }
 
-    // Show UI for authenticated users
-    showAuthenticatedUI() {
-        document.getElementById('loadingScreen').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-        document.getElementById('userMenu').classList.remove('hidden');
-        document.getElementById('userActions').classList.remove('hidden');
-        
-        document.getElementById('authButtons').classList.add('hidden');
-        document.getElementById('guestActions').classList.add('hidden');
-        
-        // Update user name if available
-        if (this.user && this.user.name) {
-            document.getElementById('userName').textContent = `Welcome, ${this.user.name}`;
-        }
+    // Is user logged in?
+    isLoggedIn() {
+        return !!this.token && !!this.user;
     }
 
-    // Show UI for guests
-    showGuestUI() {
-        document.getElementById('loadingScreen').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-        document.getElementById('authButtons').classList.remove('hidden');
-        document.getElementById('guestActions').classList.remove('hidden');
-        
-        document.getElementById('userMenu').classList.add('hidden');
-        document.getElementById('userActions').classList.add('hidden');
+    // Get current user
+    getCurrentUser() {
+        return this.user;
     }
 
-    // Hide loading screen
-    hideLoadingScreen() {
-        document.getElementById('loadingScreen').classList.add('hidden');
-    }
-
-    // Login function
+    // Login and store user/token
     async login(email, password) {
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-
             const data = await response.json();
 
-            if (response.ok) {
-                // Store token and user data
-                this.token = data.token || data.access_token;
-                this.user = data.user;
-                
-                localStorage.setItem('auth_token', this.token);
-                localStorage.setItem('user_data', JSON.stringify(this.user));
-                
-                // Redirect to dashboard
+            if (response.ok && data.token && data.user) {
+                // Remove legacy keys if present
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                // Store with new keys
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_data', JSON.stringify(data.user));
                 window.location.href = 'home.html';
                 return { success: true };
             } else {
@@ -101,36 +53,30 @@ class AuthManager {
         }
     }
 
-    // Signup function
+    // Signup and store user/token
     async signup(userData) {
         try {
             const response = await fetch('/api/signup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': await this.getCsrfToken()
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData)
             });
-
             const data = await response.json();
 
-            if (response.ok) {
-                // Store token and user data
-                this.token = data.token || data.access_token;
-                this.user = data.user;
-                
-                localStorage.setItem('auth_token', this.token);
-                localStorage.setItem('user_data', JSON.stringify(this.user));
-                
-                // Redirect to dashboard
+            if (response.ok && data.token && data.user) {
+                // Remove legacy keys if present
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                // Store with new keys
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_data', JSON.stringify(data.user));
                 window.location.href = 'home.html';
                 return { success: true };
             } else {
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     error: data.message || 'Signup failed',
-                    errors: data.errors 
+                    errors: data.errors
                 };
             }
         } catch (error) {
@@ -138,85 +84,47 @@ class AuthManager {
         }
     }
 
-    // Logout function
+    // Logout, clear storage, redirect
     async logout() {
         try {
             await fetch('/api/logout', {
                 method: 'POST',
-                headers: {
-                    'Authorization': this.token ? `Bearer ${this.token}` : '',
-                    'X-CSRF-TOKEN': await this.getCsrfToken()
-                }
+                headers: { 'Authorization': this.token ? `Bearer ${this.token}` : '' }
             });
-        } catch (error) {
-            console.error('Logout error:', error);
-        } finally {
-            // Clear local storage
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user_data');
-            this.token = null;
-            this.user = null;
-            
-            // Redirect to home page
-            window.location.href = 'index.html';
+        } catch (_) { /* Ignore network/logout errors */ }
+        // Remove both new and legacy keys
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_data');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    }
+
+    // Route protection for authenticated pages
+    requireAuth() {
+        if (!this.isLoggedIn()) {
+            window.location.href = 'login.html';
+            return false;
         }
+        return true;
     }
 
-    // Get CSRF token from meta tag
-    async getCsrfToken() {
-        return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-    }
-
-    // Check if user has specific role
-    hasRole(role) {
-        return this.user && this.user.role === role;
-    }
-
-    // Get current user
-    getCurrentUser() {
-        return this.user;
-    }
-
-    // Check if user is logged in
-    isLoggedIn() {
-        return !!this.user && !!this.token;
+    // Route protection for guest pages
+    requireGuest() {
+        if (this.isLoggedIn()) {
+            window.location.href = 'home.html';
+            return false;
+        }
+        return true;
     }
 }
 
 // Global auth instance
 const authManager = new AuthManager();
 
-// Global functions for HTML onclick events
-async function checkAuthStatus() {
-    return await authManager.checkAuthStatus();
-}
-
-async function login(email, password) {
-    return await authManager.login(email, password);
-}
-
-async function signup(userData) {
-    return await authManager.signup(userData);
-}
-
-async function logout() {
-    return await authManager.logout();
-}
-
-// Route protection for authenticated pages
-function requireAuth() {
-    if (!authManager.isLoggedIn()) {
-        window.location.href = 'login.html';
-        return false;
-    }
-    return true;
-}
-
-// Route protection for guest pages
-function requireGuest() {
-    if (authManager.isLoggedIn()) {
-        window.location.href = 'home.html';
-        return false;
-    }
-    return true;
-}
+// For HTML onclick events if needed
+async function login(email, password) { return await authManager.login(email, password); }
+async function signup(userData) { return await authManager.signup(userData); }
+async function logout() { return await authManager.logout(); }
+function requireAuth() { return authManager.requireAuth(); }
+function requireGuest() { return authManager.requireGuest(); }

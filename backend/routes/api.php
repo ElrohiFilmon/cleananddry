@@ -4,38 +4,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\FAQController;
+use App\Http\Controllers\ReviewController;
 
 // Public routes
-
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/businesses', [BusinessController::class, 'index']);
 Route::get('/businesses/{id}', [BusinessController::class, 'show']);
+Route::get('/faqs', [FAQController::class, 'index']);
+Route::get('/faqs/{id}', [FAQController::class, 'show']);
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
-// Test route
-Route::get('/test', function () {
-    return response()->json(['message' => 'API is working!', 'timestamp' => now()]);
-});
-
-// Protected routes
+// Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/check-auth', [AuthController::class, 'checkAuth']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    
-    // Business management
-    Route::put('/businesses/{id}', [BusinessController::class, 'update']);
-});
 
-Route::get('/check-session', function (Request $request) {
-    return response()->json([
-        'authenticated' => Auth::check(),
-        'user' => Auth::check() ? Auth::user() : null,
-        'session_id' => session()->getId()
-    ]);
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
+
+    // Reviews (write/update/delete)
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });

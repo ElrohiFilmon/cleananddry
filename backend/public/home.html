@@ -74,45 +74,45 @@
     </main>
 
     <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-      // Check authentication using your AuthManager
-      if (!requireAuth()) return;
+document.addEventListener('DOMContentLoaded', async () => {
+    // Check authentication using your AuthManager
+    if (!requireAuth()) return;
 
-      const user = authManager.user;  // Now always fresh from localStorage
-      const token = authManager.token;
+    const user = authManager.user;  // Now always fresh from localStorage
+    const token = authManager.token;
 
-      if (!token) {
-          authManager.forceLogout();
-          return;
-      }
+    if (!token) {
+        authManager.forceLogout();
+        return;
+    }
 
-      // Validate token with backend
-      try {
-          const response = await fetch('/api/check-auth', {
-              headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (!response.ok) throw new Error("Not authenticated");
-          const data = await response.json();
-          if (!data.authenticated) throw new Error("Not authenticated");
-      } catch (e) {
-          authManager.forceLogout();
-          return;
-      }
+    // Validate token with backend
+    try {
+        const response = await fetch('/api/check-auth', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Not authenticated");
+        const data = await response.json();
+        if (!data.authenticated) throw new Error("Not authenticated");
+    } catch (e) {
+        authManager.forceLogout();
+        return;
+    }
 
-      // Show welcome message
-      document.getElementById('userWelcome').textContent = `Welcome, ${user && user.name ? user.name : ''}`;
+    // Show welcome message
+    document.getElementById('userWelcome').textContent = `Welcome, ${user && user.name ? user.name : ''}`;
 
-      // Show appropriate dashboard based on role
-      if (user && user.role === 'customer') {
-          document.getElementById('customerDashboard').classList.remove('hidden');
-      } else if (user && user.role === 'washer') {
-          document.getElementById('washerDashboard').classList.remove('hidden');
-      }
+    // Show appropriate dashboard based on role
+    if (user && user.role === 'customer') {
+        document.getElementById('customerDashboard').classList.remove('hidden');
+    } else if (user && user.role === 'washer') {
+        document.getElementById('washerDashboard').classList.remove('hidden');
+    }
 
-      // Show dashboard content
-      document.getElementById('loadingScreen').classList.add('hidden');
-      document.getElementById('dashboardContent').classList.remove('hidden');
-  });
+    // Show dashboard content
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('dashboardContent').classList.remove('hidden');
+});
     </script>
 </body>
 </html>

@@ -66,9 +66,9 @@
           const result = await response.json();
 
           if (response.ok) {
-            // Store token/user for API calls
-            localStorage.setItem('token', result.token);
-            localStorage.setItem('user', JSON.stringify(result.user));
+            // Store token/user for API calls (use same keys as auth.js)
+            localStorage.setItem('auth_token', result.token);
+            localStorage.setItem('user_data', JSON.stringify(result.user));
             // Redirect to home
             window.location.href = 'home.html';
           } else {

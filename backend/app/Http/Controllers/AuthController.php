@@ -2,45 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\PersonalAccessToken;  // Add for tokens
+use App\Models\User;
 
 class AuthController extends Controller
 {
+    // Signup (register)
     public function signup(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:customer,washer',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|string|in:customer,washer'
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
+            'password' => bcrypt($validated['password']),
+            'role' => $validated['role']
         ]);
 
-        // Create token for API auth
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'message' => 'Signup successful',
             'user' => $user,
-            'token' => $token  // Frontend stores this
-        ], 201);
+            'token' => $token
+        ]);
     }
 
+    // Login
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
 
         if (!Auth::attempt($credentials)) {
@@ -53,22 +52,24 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login successful',
             'user' => $user,
-            'token' => $token  // Frontend stores this
+            'token' => $token
         ]);
     }
 
+    // Logout
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+    // Auth check
     public function checkAuth(Request $request)
     {
-        $user = $request->user();  // From token
+        $user = $request->user();
         return response()->json([
             'authenticated' => !!$user,
             'user' => $user
         ]);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out']);
     }
 }
