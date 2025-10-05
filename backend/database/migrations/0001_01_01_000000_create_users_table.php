@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password'); // 👈 must exist
+            $table->string('password');
+            $table->decimal('lat', 10, 8)->nullable();
+            $table->decimal('lng', 11, 8)->nullable();
             $table->enum('role', ['customer', 'washer'])->default('customer');
             $table->timestamps();
         });
@@ -42,7 +44,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+
         Schema::dropIfExists('users');
+        Schema::dropIfExists(['lat', 'lng']);
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }

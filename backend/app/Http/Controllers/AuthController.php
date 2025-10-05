@@ -8,6 +8,19 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // Update user location (lat/lng)
+    public function updateLocation(Request $request)
+    {
+        $user = Auth::user();
+        $validated = $request->validate([
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+        ]);
+        $user->lat = $validated['lat'];
+        $user->lng = $validated['lng'];
+        $user->save();
+        return response()->json(['message' => 'Location updated', 'user' => $user]);
+    }
     // Signup (register)
     public function signup(Request $request)
     {
@@ -15,7 +28,12 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|string|in:customer,washer'
+            'role' => 'required|string|in:customer,washer',
+            // Business fields (optional for customer, required for washer)
+            'business_name' => 'required_if:role,washer|string|max:255',
+            'business_address' => 'required_if:role,washer|string|max:255',
+            'business_lat' => 'required_if:role,washer|numeric',
+            'business_lng' => 'required_if:role,washer|numeric',
         ]);
 
         $user = User::create([
@@ -24,6 +42,18 @@ class AuthController extends Controller
             'password' => bcrypt($validated['password']),
             'role' => $validated['role']
         ]);
+
+        // If washer, create business record
+        if ($validated['role'] === 'washer') {
+            \App\Models\Business::create([
+                'user_id' => $user->id,
+                'name' => $validated['business_name'],
+                'location_address' => $validated['business_address'],
+                'location_lat' => $request->input('business_lat'),
+                'location_lng' => $request->input('business_lng'),
+                'is_active' => true,
+            ]);
+        }
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

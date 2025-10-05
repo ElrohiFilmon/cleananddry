@@ -39,6 +39,14 @@
                         <option value="washer">Washer/Detailer</option>
                     </select>
                 </div>
+                <!-- Business fields (hidden unless washer/detailer) -->
+                <div id="businessFields" class="hidden space-y-2">
+                    <input id="business_name" name="business_name" type="text" class="block w-full px-3 py-2 border border-gray-300 rounded" placeholder="Business Name">
+                    <input id="business_address" name="business_address" type="text" class="block w-full px-3 py-2 border border-gray-300 rounded" placeholder="Business Address">
+                    <input id="business_lat" name="business_lat" type="hidden">
+                    <input id="business_lng" name="business_lng" type="hidden">
+                    <div id="locationStatus" class="text-xs text-gray-500"></div>
+                </div>
             </div>
 
             <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"></div>
@@ -60,39 +68,69 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Redirect if already logged in
             if (authManager.isLoggedIn()) {
                 window.location.href = 'home.html';
                 return;
             }
 
+            const roleSelect = document.getElementById('role');
+            const businessFields = document.getElementById('businessFields');
+            const businessLat = document.getElementById('business_lat');
+            const businessLng = document.getElementById('business_lng');
+            const locationStatus = document.getElementById('locationStatus');
+
+            roleSelect.addEventListener('change', () => {
+                if (roleSelect.value === 'washer') {
+                    businessFields.classList.remove('hidden');
+                } else {
+                    businessFields.classList.add('hidden');
+                }
+            });
+
             document.getElementById('signupForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
-                const formData = {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    password: document.getElementById('password').value,
-                    role: document.getElementById('role').value,
-                    password_confirmation: document.getElementById('password').value
-                };
-
                 const errorDiv = document.getElementById('errorMessage');
-
-                // Clear previous errors
                 errorDiv.classList.add('hidden');
 
-                const result = await signup(formData);
-                
-                if (!result.success) {
-                    let errorMessage = result.error;
-                    if (result.errors) {
-                        // Handle validation errors
-                        errorMessage = Object.values(result.errors).flat().join(', ');
+                // Always get geolocation for both user and business
+                function askLocationAndSubmit() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(async pos => {
+                            const lat = pos.coords.latitude;
+                            const lng = pos.coords.longitude;
+                            const formData = {
+                                name: document.getElementById('name').value,
+                                email: document.getElementById('email').value,
+                                password: document.getElementById('password').value,
+                                role: document.getElementById('role').value,
+                                password_confirmation: document.getElementById('password').value,
+                                lat: lat,
+                                lng: lng
+                            };
+                            if (formData.role === 'washer') {
+                                formData.business_name = document.getElementById('business_name').value;
+                                formData.business_address = document.getElementById('business_address').value;
+                                formData.business_lat = lat;
+                                formData.business_lng = lng;
+                            }
+                            const result = await signup(formData);
+                            if (!result.success) {
+                                let errorMessage = result.error;
+                                if (result.errors) {
+                                    errorMessage = Object.values(result.errors).flat().join(', ');
+                                }
+                                errorDiv.textContent = errorMessage;
+                                errorDiv.classList.remove('hidden');
+                            }
+                        }, err => {
+                            alert('Location is required for signup. Please allow location access.');
+                            askLocationAndSubmit();
+                        }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                    } else {
+                        alert('Geolocation is not supported by your browser.');
                     }
-                    errorDiv.textContent = errorMessage;
-                    errorDiv.classList.remove('hidden');
                 }
+                askLocationAndSubmit();
             });
         });
     </script>

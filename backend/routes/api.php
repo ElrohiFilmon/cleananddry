@@ -20,6 +20,8 @@ Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
+    // User location update
+    Route::put('/user/location', [AuthController::class, 'updateLocation']);
     Route::get('/check-auth', [AuthController::class, 'checkAuth']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -28,6 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
+
+    // Business location update
+    Route::put('/businesses/{id}/location', [BusinessController::class, 'updateLocation']);
 
     // Reviews (write/update/delete)
     Route::post('/reviews', [ReviewController::class, 'store']);
