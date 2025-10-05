@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labiyajo - Book</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --water-blue: #5BC0EB;
+      --macchiato: #D7CDB8;
+      --greige: #F1EEE8;
+      --charcoal: #2C2C2C;
+      --white-custom: #FAFAFA;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .text-water-blue { color: var(--water-blue); }
+    .bg-water-blue { background-color: var(--water-blue); }
+    .bg-macchiato { background-color: var(--macchiato); }
+    .bg-greige { background-color: var(--greige); }
+    .text-charcoal { color: var(--charcoal); }
+    .bg-white-custom { background-color: var(--white-custom); }
+    .border-charcoal-20 { border-color: rgba(44, 44, 44, 0.2); }
+    .hover\:bg-blue-500:hover { background-color: #3b9bc7; }
+  </style>
+</head>
+<body class="bg-white-custom text-charcoal">
+  <header class="fixed top-0 w-full bg-white-custom shadow-sm z-10">
+    <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-water-blue">Labiyajo</a>
+      <div class="space-x-6">
+        <a href="index.html#services" class="hover:text-water-blue transition">Services</a>
+        <a href="index.html#contact" class="hover:text-water-blue transition">Contact</a>
+        <a href="login.html" class="bg-water-blue text-white px-4 py-2 rounded-full hover:bg-blue-500 transition">Login</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="py-16 bg-greige min-h-screen flex items-center">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Book Your Car Wash</h2>
+      <form class="max-w-lg mx-auto space-y-4">
+        <select class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+          <option>Choose an option</option>
+          <option>Mobile Car Wash</option>
+          <option>Stationary Location</option>
+        </select>
+        <input type="text" placeholder="Name" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <input type="tel" placeholder="Phone" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <input type="text" placeholder="Car Type" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <input type="text" placeholder="Location" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <input type="date" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <input type="time" class="w-full p-3 rounded-lg border border-charcoal-20 focus:outline-none focus:ring-2 focus:ring-water-blue">
+        <button type="submit" class="bg-water-blue text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-500 transition">Confirm Booking</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="bg-charcoal text-white-custom py-6 text-center">
+    <p>© 2025 Labiyajo Car Wash. All rights reserved.</p>
+  </footer>
+</body>
+</html>
