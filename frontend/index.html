@@ -10,45 +10,85 @@
 
 || #
 -->
-<!doctype html>
-<html lang="en" class="antialiased" >
+
+      <!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: false }" x-init="
+  darkMode = localStorage.getItem('darkMode') === 'true';
+  $watch('darkMode', val => localStorage.setItem('darkMode', val))
+">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clean&Dry — Mobile Car Wash</title>
-
-  <!-- Tailwind CDN (play-cdn) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clean&Dry - Welcome</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // Use class-based dark mode
-    tailwind.config = { darkMode: 'class' }
-  </script>
-
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-
-  <!-- Alpine for small interactivity in markup -->
   <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
-  <link rel="icon" href="assets/images/favicon.png" />
+  <script src="assets/js/auth.js" defer></script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body :class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'">
+  
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-lg">Checking authentication...</p>
+    </div>
+  </div>
 
-  <!-- Header -->
-  <header class="bg-white/60 dark:bg-gray-800/60 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">C&amp;D</div>
-        <span class="font-bold text-lg">Clean&amp;Dry</span>
-      </a>
+  <!-- Content will be shown after auth check -->
+  <div id="mainContent" class="hidden">
+    <!-- Navbar -->
+    <header class="bg-white dark:bg-gray-800 shadow">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold text-blue-600">Clean&Dry</a>
+        <div class="flex space-x-4 items-center">
+          <button @click="darkMode = !darkMode" class="px-3 py-2 rounded bg-gray-200 dark:bg-gray-700">
+            <span x-show="!darkMode">🌙</span>
+            <span x-show="darkMode">☀️</span>
+          </button>
+          <div id="authButtons" class="hidden">
+            <a href="login.html" class="hover:text-blue-600">Login</a>
+            <a href="signup.html" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">Sign Up</a>
+          </div>
+          <div id="userMenu" class="hidden">
+            <span id="userName" class="mr-4"></span>
+            <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
 
+    <!-- Hero Section -->
+    <section class="text-center py-20">
+      <h1 class="text-5xl font-extrabold mb-4">We Bring the Shine to You 🚗✨</h1>
+      <p class="text-lg mb-6">Book a mobile car wash or detailer anywhere, anytime.</p>
+      <div id="guestActions" class="hidden">
+        <a href="signup.html" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700">Get Started</a>
+        <a href="login.html" class="ml-4 border border-blue-600 text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50">Login</a>
+      </div>
+      <div id="userActions" class="hidden">
+        <a href="home.html" class="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700">Go to Dashboard</a>
+        <a href="booking.html" class="ml-4 bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700">Book a Wash</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Check authentication status on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkAuthStatus();
+    });
+  </script>
+</body>
+</html>
+
+<!-- 
       <nav class="hidden md:flex items-center gap-6">
         <a href="index.html#services" class="hover:text-blue-500">Services</a>
         <a href="businesses.html" class="hover:text-blue-500">Providers</a>
         <a href="booking.html" class="hover:text-blue-500">Book</a>
         <a href="reviews.html" class="hover:text-blue-500">Reviews</a>
         <button id="darkToggle" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700" title="Toggle dark mode">
-          <!-- JS will toggle icon -->
+          JS will toggle icon
           <svg id="darkIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path id="darkPath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M1 12h1M22 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" />
@@ -57,118 +97,4 @@
 
         <a href="login.html" class="text-sm">Login</a>
         <a href="signup.html" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700">Sign Up</a>
-      </nav>
-
-      <!-- Mobile -->
-      <div class="md:hidden flex items-center gap-3">
-        <button id="mobileMenuBtn" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">☰</button>
-      </div>
-    </div>
-
-    <!-- mobile menu -->
-    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-      <a href="#services" class="block py-2">Services</a>
-      <a href="businesses.html" class="block py-2">Providers</a>
-      <a href="booking.html" class="block py-2">Book</a>
-      <a href="reviews.html" class="block py-2">Reviews</a>
-      <div class="flex gap-3 mt-2">
-        <a href="login.html" class="text-sm">Login</a>
-        <a href="signup.html" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm">Sign Up</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <main class="max-w-7xl mx-auto px-6">
-    <section class="grid md:grid-cols-2 gap-10 items-center py-20">
-      <div>
-        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">We bring the shine to you — anytime, anywhere.</h1>
-        <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Book a mobile detailer or find a nearby car wash. Cashless, fast, and insured.</p>
-
-        <div class="mt-8 flex gap-3">
-          <a href="booking.html" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 shadow">Book Now</a>
-          <a href="businesses.html" class="px-6 py-3 rounded-full border hover:bg-gray-100 dark:hover:bg-gray-800">Find Providers</a>
-        </div>
-
-        <ul class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300">
-          <li>• Secure escrow payments</li>
-          <li>• Real-time booking status</li>
-          <li>• Ratings & reviews</li>
-          <li>• Provider verification</li>
-        </ul>
-      </div>
-
-      <!-- animation panel: GSAP simple car shine reveal -->
-      <div class="relative">
-        <div id="heroCanvas" class="w-full h-64 md:h-80 bg-gradient-to-tr from-gray-100 to-white rounded-xl shadow flex items-center justify-center overflow-hidden">
-          <!-- placeholder image / visual -->
-          <img src="https://source.unsplash.com/800x500/?car-wash" alt="car" class="object-cover w-full h-full opacity-90" />
-          <div id="heroShine" class="pointer-events-none absolute inset-0"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Services -->
-    <section id="services" class="py-10">
-      <h2 class="text-2xl font-bold mb-6">Our Services</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        <article class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 class="font-semibold mb-2">Exterior Wash</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Pressure wash, soap, and quick dry to a showroom finish.</p>
-        </article>
-
-        <article class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 class="font-semibold mb-2">Interior Detail</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Vacuum, deep clean upholstery, and interior sanitization.</p>
-        </article>
-
-        <article class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 class="font-semibold mb-2">Full Detail</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Complete interior + exterior package with polish and protection.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- Quick features -->
-    <section class="py-10">
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-blue-600 text-white p-6 rounded-lg">
-          <h4 class="font-semibold">Escrow Payments</h4>
-          <p class="text-sm mt-2">We hold payments until both sides confirm completion.</p>
-        </div>
-        <div class="bg-green-600 text-white p-6 rounded-lg">
-          <h4 class="font-semibold">Verified Providers</h4>
-          <p class="text-sm mt-2">Providers go through KYC and manual checks (optional later).</p>
-        </div>
-        <div class="bg-indigo-600 text-white p-6 rounded-lg">
-          <h4 class="font-semibold">Ratings & Reviews</h4>
-          <p class="text-sm mt-2">Reliability measured by cancellations and reviews.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Reviews -->
-    <section class="py-10">
-      <h2 class="text-2xl font-bold mb-6">What customers say</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        <blockquote class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">“Amazing and on time!” — <strong>Jasmine</strong></blockquote>
-        <blockquote class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">“Saved my weekend.” — <strong>Daniel</strong></blockquote>
-        <blockquote class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">“Professional detailers.” — <strong>Chris</strong></blockquote>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="mt-16 bg-white dark:bg-gray-800">
-    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="text-sm">&copy; <span id="year"></span> Clean&amp;Dry. All rights reserved.</div>
-      <div class="flex gap-4 text-sm">
-        <a href="faq.html" class="hover:text-blue-500">FAQ</a>
-        <a href="contact.html" class="hover:text-blue-500">Contact</a>
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/js/main.js" defer></script>
-</body>
-</html>
+      </nav> -->
